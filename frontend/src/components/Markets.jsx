@@ -10,7 +10,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { API_URL } from '../App';
 
-function Markets() {
+function Markets({ token }) {
   const [symbol, setSymbol] = useState('AAPL');
   const [searchVal, setSearchVal] = useState('');
   const [quoteData, setQuoteData] = useState(null);
@@ -44,7 +44,11 @@ function Markets() {
       if (searchVal.trim().length >= 2) {
         setSearchLoading(true);
         try {
-          const res = await fetch(`${API_URL}/api/market/search?q=${searchVal}`);
+          const res = await fetch(`${API_URL}/api/market/search?q=${searchVal}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
           if (res.ok) {
             const data = await res.json();
             setSearchResults(data.quotes || []);
@@ -71,8 +75,16 @@ function Markets() {
       setError(null);
 
       const [quoteRes, histRes] = await Promise.all([
-        fetch(`${API_URL}/api/market/quote/${sym}`),
-        fetch(`${API_URL}/api/market/history/${sym}?timeframe=${timeframe}`)
+        fetch(`${API_URL}/api/market/quote/${sym}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }),
+        fetch(`${API_URL}/api/market/history/${sym}?timeframe=${timeframe}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
       ]);
 
       if (!quoteRes.ok || !histRes.ok) {
@@ -98,7 +110,11 @@ function Markets() {
       if (!symbol) return;
       try {
         setChartLoading(true);
-        const res = await fetch(`${API_URL}/api/market/history/${symbol}?timeframe=${timeframe}`);
+        const res = await fetch(`${API_URL}/api/market/history/${symbol}?timeframe=${timeframe}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           setHistoryData(data.quotes || []);

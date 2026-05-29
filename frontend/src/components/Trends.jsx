@@ -11,7 +11,7 @@ import {
 import { Line, Doughnut } from 'react-chartjs-2';
 import { API_URL } from '../App';
 
-function Trends({ portfolioData }) {
+function Trends({ portfolioData, token }) {
   const { summary, holdings = [] } = portfolioData;
   const [benchmarkData, setBenchmarkData] = useState([]);
   const [benchmarkLoading, setBenchmarkLoading] = useState(false);
@@ -41,9 +41,17 @@ function Trends({ portfolioData }) {
         setBenchmarkLoading(true);
         // Fetch 1-month history for S&P 500 index and each active symbol
         const [sp500Res, ...histResList] = await Promise.all([
-          fetch(`${API_URL}/api/market/history/^GSPC?timeframe=1M`).then(res => res.ok ? res.json() : null),
+          fetch(`${API_URL}/api/market/history/^GSPC?timeframe=1M`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }).then(res => res.ok ? res.json() : null),
           ...holdings.map(h => 
-            fetch(`${API_URL}/api/market/history/${h.symbol}?timeframe=1M`)
+            fetch(`${API_URL}/api/market/history/${h.symbol}?timeframe=1M`, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            })
               .then(res => res.ok ? res.json() : null)
               .catch(() => null)
           )

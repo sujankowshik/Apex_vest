@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { API_URL } from '../App';
 
-function Portfolio({ portfolioData, transactions, onAddTransaction, onDeleteTransaction }) {
+function Portfolio({ portfolioData, transactions, onAddTransaction, onDeleteTransaction, token }) {
   const { summary, holdings = [] } = portfolioData;
 
   // Add Transaction Modal State
@@ -49,7 +49,11 @@ function Portfolio({ portfolioData, transactions, onAddTransaction, onDeleteTran
       if (symbol.trim().length >= 2) {
         setSearchLoading(true);
         try {
-          const res = await fetch(`${API_URL}/api/market/search?q=${symbol}`);
+          const res = await fetch(`${API_URL}/api/market/search?q=${symbol}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
           if (res.ok) {
             const data = await res.json();
             setSearchResults(data.quotes || []);
@@ -76,7 +80,11 @@ function Portfolio({ portfolioData, transactions, onAddTransaction, onDeleteTran
     
     // Fetch live quote to auto-populate price
     try {
-      const res = await fetch(`${API_URL}/api/market/quote/${selectedSym}`);
+      const res = await fetch(`${API_URL}/api/market/quote/${selectedSym}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (res.ok) {
         const quoteData = await res.json();
         if (quoteData && quoteData.regularMarketPrice) {

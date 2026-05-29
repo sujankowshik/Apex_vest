@@ -8,6 +8,15 @@
       "price": 425.97,
       "date": "2026-05-29",
       "createdAt": "2026-05-29T07:37:31.025Z"
+    },
+    {
+      "id": "a11aaebb-a637-4977-b3b2-5570c02ff874",
+      "symbol": "NVDA",
+      "type": "BUY",
+      "quantity": 5,
+      "price": 925.29,
+      "date": "2026-05-29",
+      "createdAt": "2026-05-29T08:16:33.197Z"
     }
   ]
 }

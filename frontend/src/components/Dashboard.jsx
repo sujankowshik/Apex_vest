@@ -37,7 +37,7 @@ ChartJS.register(
   Filler
 );
 
-function Dashboard({ portfolioData, onNavigate }) {
+function Dashboard({ portfolioData, onNavigate, token }) {
   const { summary, holdings = [] } = portfolioData;
   const [indices, setIndices] = useState([]);
   const [historyData, setHistoryData] = useState([]);
@@ -47,7 +47,11 @@ function Dashboard({ portfolioData, onNavigate }) {
   useEffect(() => {
     const fetchIndices = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/market/indices`);
+        const res = await fetch(`${API_URL}/api/market/indices`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           setIndices(data);
@@ -74,7 +78,11 @@ function Dashboard({ portfolioData, onNavigate }) {
         setHistoryLoading(true);
         // Fetch 1-month history for each active symbol
         const historyPromises = holdings.map(h => 
-          fetch(`${API_URL}/api/market/history/${h.symbol}?timeframe=1M`)
+          fetch(`${API_URL}/api/market/history/${h.symbol}?timeframe=1M`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
             .then(res => res.ok ? res.json() : null)
             .catch(() => null)
         );
