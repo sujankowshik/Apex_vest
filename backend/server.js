@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Enable CORS for frontend development server (supports any localhost/127.0.0.1 port dynamically)
+// Enable CORS for frontend (supports local dev, Render subdomains, and custom FRONTEND_URL env var)
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, or server-to-server)
@@ -21,7 +21,12 @@ app.use(cors({
     
     // Check if origin matches localhost/127.0.0.1 with any port
     const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-    if (isLocalhost) {
+    // Check if origin matches Render deployments (*.onrender.com)
+    const isRender = /^https?:\/\/[a-zA-Z0-9-]+\.onrender\.com$/.test(origin);
+    // Check if origin matches a custom FRONTEND_URL environment variable
+    const isAllowedFrontend = process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL.trim();
+
+    if (isLocalhost || isRender || isAllowedFrontend) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
