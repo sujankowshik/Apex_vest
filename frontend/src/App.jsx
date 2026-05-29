@@ -26,38 +26,38 @@ function App() {
   const [user, setUser] = useState(null);
 
   // Verify current user session on load / token change
-  useEffect(() => {
-    const verifySession = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+  const verifySession = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-      try {
-        setLoading(true);
-        const res = await fetch(`${API_URL}/api/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
-          // Load dashboard data immediately using this token
-          await fetchData(token);
-        } else {
-          // Token expired or invalid
-          handleLogout();
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_URL}/api/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } catch (err) {
-        console.error('Session verification error:', err);
-        setError('Connection to backend server failed. Make sure server is running.');
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
 
+      if (res.ok) {
+        const userData = await res.json();
+        setUser(userData);
+        // Load dashboard data immediately using this token
+        await fetchData(token);
+      } else {
+        // Token expired or invalid
+        handleLogout();
+      }
+    } catch (err) {
+      console.error('Session verification error:', err);
+      setError('Connection to backend server failed. Make sure server is running.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     verifySession();
   }, [token]);
 
