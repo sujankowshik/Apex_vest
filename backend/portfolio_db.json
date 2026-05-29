@@ -1,0 +1,13 @@
+{
+  "transactions": [
+    {
+      "id": "b9e21b0c-96fa-4417-8224-d545e86d7b46",
+      "symbol": "MSFT",
+      "type": "BUY",
+      "quantity": 10,
+      "price": 425.97,
+      "date": "2026-05-29",
+      "createdAt": "2026-05-29T07:37:31.025Z"
+    }
+  ]
+}
